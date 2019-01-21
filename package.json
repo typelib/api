@@ -1,0 +1,61 @@
+{
+  "name": "@kernel-js/api",
+  "version": "0.1.0",
+  "description": "Package to easily develop REST API following JSON API specification.",
+  "main": "index.js",
+  "module": "./es6/index.js",
+  "scripts": {
+    "start": "babel-node index.js",
+    "test": "cross-env BABEL_ENV=test mocha --require babel-core/register --recursive",
+    "clean": "rimraf dist es6",
+    "build": "npm run clean && npm run build:cjs && npm run build:es6",
+    "build:cjs": "mkdir -p dist && cross-env BABEL_ENV=cjs babel src --out-dir dist/",
+    "build:es6": "mkdir -p es6 && cross-env BABEL_ENV=es6 babel src --out-dir es6/",
+    "prepublishOnly": "npm run build && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kernel-js/api.git"
+  },
+  "author": "Gus <gus@brid-it.com>",
+  "contributors": [
+    "Carlos Henrique Escouto <carloshenriqueescouto@gmail.com>",
+    "Bruno Santos <bruno.dos1997@gmail.com>"
+  ],
+  "keywords": [
+    "kernel",
+    "kernel-framework",
+    "orm",
+    "jsonAPI",
+    "request",
+    "requests",
+    "API"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kernel-js/api/issues"
+  },
+  "homepage": "https://github.com/kernel-js/api#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.1",
+    "cross-env": "^5.1.4",
+    "mocha": "^5.0.4",
+    "rimraf": "^2.6.3"
+  },
+  "dependencies": {
+    "@kernel-js/exceptions": "^1.0.4",
+    "@kernel-js/serializer": "^1.0.0",
+    "axios": "^0.18.0"
+  }
+}

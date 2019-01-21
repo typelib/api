@@ -1,0 +1,43 @@
+{
+  "presets": [ "es2015", "stage-0" ],
+  "plugins": [
+    ["transform-builtin-extend", {
+      "globals": ["Error"],
+      "approximate": true
+    }],
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }]
+  ],
+  "env" : {
+    "test" : {
+      "presets": [
+        ["env", { "targets": { "node": 5 } }]
+      ]
+    },
+    "cjs" : {
+      "plugins": [
+        "add-module-exports",
+        ["transform-builtin-extend", {
+          "globals": ["Error"],
+          "approximate": true
+        }]
+      ],
+      "presets": [
+        ["env", { "modules": "commonjs" }]
+      ]
+    },
+    "es6" : {
+      "plugins": [
+        ["transform-builtin-extend", {
+          "globals": ["Error"],
+          "approximate": true
+        }]
+      ],
+      "presets": [
+        ["env", { "modules": false }]
+      ]
+    }
+  }
+}
