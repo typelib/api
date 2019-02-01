@@ -4,6 +4,10 @@ const Axios = require('axios');
 
 class Entity extends EntityManager {
 
+  async request (config) {
+    return Axios.request(config);
+  }
+
   baseUrl() {
     return 'http://127.0.0.1:8000/api'
   }
@@ -14,10 +18,6 @@ class Post extends Entity{
 
   resourceName() {
     return 'posts'
-  }
-
-  async request (config) {
-    return Axios.request(config);
   }
 
   fields() {
@@ -52,7 +52,6 @@ response
       // response.title = 'Um novo dia para perder um dia YEAH';
       // response.save().send()
         // .then(result => console.log(result))
-
       console.log(response)
    });
 
