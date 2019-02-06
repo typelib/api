@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "outDir": "dist",
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "removeComments": true,
+      "experimentalDecorators": true,
+      "noEmitOnError": true
+    },
+    "include": [
+      "src/**/*.ts",
+      "./customType.d.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }

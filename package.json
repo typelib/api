@@ -8,6 +8,8 @@
     "start": "babel-node index.js",
     "test": "cross-env BABEL_ENV=test mocha --require babel-core/register --recursive",
     "clean": "rimraf dist es6",
+    "compile": "tsc",
+    "watch": "tsc -w",
     "build": "npm run clean && npm run build:cjs && npm run build:es6",
     "build:cjs": "mkdir -p dist && cross-env BABEL_ENV=cjs babel src --out-dir dist/",
     "build:es6": "mkdir -p es6 && cross-env BABEL_ENV=es6 babel src --out-dir es6/",
@@ -37,6 +39,7 @@
   },
   "homepage": "https://github.com/kernel-js/api#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.120",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.5",
@@ -51,7 +54,8 @@
     "chai-http": "^4.2.1",
     "cross-env": "^5.1.4",
     "mocha": "^5.0.4",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "typescript": "^3.3.1"
   },
   "dependencies": {
     "@kernel-js/exceptions": "^1.0.4",

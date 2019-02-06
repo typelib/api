@@ -1,5 +1,7 @@
 import { Serializer, JsonEncoder, JsonApiNormalizer, DateNormalizer } from '@kernel-js/serializer';
-import _ from 'lodash'
+import { clone, mapValues, isUndefined, forEach, isEmpty, indexOf, keys } from 'lodash'
+import { Model } from './Model';
+import { AxiosResponse } from 'axios';
 
 /**
  *
@@ -13,23 +15,23 @@ export default class Handling {
    * @returns {any}
    * @private
    */
-  _hydrate(that, respond)
+  private _hydrate(that: Model, respond: any): any
   {
-    return Object.assign(_.clone(that), respond)
+    return Object.assign(clone(that), respond)
   }
   
   /**
    *
    * @param that
    * @param respond
-   * @returns {*}
+   * @returns {any}
    * @private
    */
-  _hydrateCollection(that, respond)
+  private _hydrateCollection(that: Model, respond: any): any
   {
     let self = this;
-    return _.mapValues(respond, function (value) {
-      return self._hydrate(_.clone(that), value);
+    return mapValues(respond, (value) => {
+      return self._hydrate(clone(that), value);
     });
   }
   
@@ -38,15 +40,15 @@ export default class Handling {
    * @param that
    * @param response
    * @param hydrate
-   * @returns {*}
+   * @returns {any}
    */
-  respond(that, response, hydrate = true)
+  public respond(that: Model, response: AxiosResponse, hydrate = true): any
   {
     let serializer = new Serializer(new JsonEncoder(), [new JsonApiNormalizer(), new DateNormalizer()]);
     let respond = serializer.unserialize((typeof response === 'string') ? response : JSON.stringify(response));
     let hydrated;
 
-    if(_.indexOf(_.keys(respond), '0') !== -1) {
+    if(indexOf(keys(respond), '0') !== -1) {
       hydrated = this._hydrateCollection(that, respond);
     }else {
       hydrated = this._hydrate(that, respond);
@@ -58,11 +60,18 @@ export default class Handling {
   /**
    *
    * @param response
-   * @returns {*}
+   * @returns {any}
    */
-  serialize(response)
+  public serialize(response: Model): any
   {
-    let data = {};
+    let data: {
+      id: number,
+      type: string,
+      data?: any,
+    } = {
+      id: NaN,
+      type: '',
+    };
   
     if (response.hasOwnProperty('id')) {
       data.id = response.id;
@@ -70,17 +79,17 @@ export default class Handling {
 
     data.type = response.type;
   
-    _.forEach(response.fields(), field => {
-      if (!_.isUndefined(response[field])) {
-        data[field] = response[field];
-      }
-    });
+    // forEach(response.fields, field => {
+    //   if (!isUndefined(response[field])) {
+    //     data[field] = response[field];
+    //   }
+    // });
   
-    _.forEach(response.relationshipNames(), name => {
-      if(!_.isEmpty(response[name])){
-        data[name] = response[name]['id'];
-      }
-    });
+    // forEach(response.relationshipNames, name => {
+    //   if(!isEmpty(response[name])){
+    //     data[name] = response[name]['id'];
+    //   }
+    // });
 
     let serializer = new Serializer(new JsonEncoder());
     return serializer.serialize(data);
