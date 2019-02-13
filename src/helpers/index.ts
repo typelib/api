@@ -1,1 +1,1 @@
-export * from './decorators/Validate';
+export * from './decorators/ResolveArray';

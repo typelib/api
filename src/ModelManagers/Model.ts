@@ -1,66 +1,63 @@
 import Handling from './Handling';
 import QueryModifier from '../QueryManagers/QueryModifier'
 import QueryBuilder from '../QueryManagers/QueryBuilder';
-import { AxiosPromise } from 'axios';
 import { Config } from '../Interfaces/index';
 import { TypeError } from '@kernel-js/exceptions';
-import { Validate } from '../helpers/index';
+import { ResolveArray } from '../helpers/index';
 
 /**
  *
  */
-export abstract class Model {
+export default abstract class Model {
     
   /**
-   *
    * @type {Handling}
    */
   protected handling: Handling;
 
   /**
-   * 
+   * @type {QueryModifier}
+   */
+  protected queryModifier: QueryModifier;
+
+  /**
    * @type {QueryBuilder}
    */
   public queryBuilder: QueryBuilder;
 
   /**
-   * 
    * @type {Number}
    */
-  public id: number;
+  public id!: number;
 
   /**
-   * 
    * @type {String}
    */
-  public type: string;
+  public type!: string;
 
   /**
-   * 
    * @type {Config}
    */
-  public config: Config;
+  public config!: Config;
 
   /**
-   * 
    * @type {String}
    */
-  abstract get resourceName(): string
+  get resourceName() {
+    return '';
+  };
 
   /**
-   * 
    * @type {String}
    */
   abstract get baseUrl(): string;
 
   /**
-   * 
    * @type {Array<string>}
    */
   abstract get fields(): Array<string>;
 
   /**
-   * 
    * @type {Array<string>}
    */
   abstract get relationshipNames(): Array<string>;
@@ -69,8 +66,8 @@ export abstract class Model {
    *
    */
   constructor() {
-
     this.queryBuilder = new QueryBuilder();
+    this.queryModifier = new QueryModifier(this.resourceName);
     this.handling = new Handling();
   }
 
@@ -83,51 +80,35 @@ export abstract class Model {
 
   /**
    * @param  {Config} config
-   * @returns AxiosPromise
+   * @returns Promise
    */
   protected abstract async request(config: Config): Promise<any>;
 
-  // Triggers
-
   /**
-   *
-   * @returns {Promise<any>}
+   * @param  {boolean=true} hydrate
+   * @returns Promise
    */
-  protected async send(hydrate = true): Promise<any> {
+  protected async getEntity(hydrate:boolean = true): Promise<any> {
     let response = await this.request(this.config);
-    console.log(response, 'w');
     return (response.data) ? this.handling.respond(this, response.data, hydrate) : response;
   }
 
   /**
-   *
-   * @returns {Promise<any>}
+   * @returns Promise
    */
   protected getContent(): Promise<any> {
-    return this.send(false);
+    return this.getEntity(false);
   }
 
   /**
-   *
-   * @returns {string}
+   * @returns string
    */
   protected getUrl(): string {
     return this.config.url;
   }
 
   /**
-   *
-   * @returns {*}
-   */
-  protected getUrlConfig(): any {
-    return this.config;
-  }
-
-  // Constructors
-
-  /**
-   *
-   * @returns {Model}
+   * @returns Model
    */
   protected all(): Model {
     this.config = {
@@ -141,8 +122,7 @@ export abstract class Model {
   }
 
   /**
-   *
-   * @returns {Model}
+   * @returns Model
    */
   protected save(): Model {
     if (this.hasOwnProperty('id')) {
@@ -165,8 +145,8 @@ export abstract class Model {
   }
 
   /**
-   * @returns {Model}
-   * @param id 
+   * @param  {number} id
+   * @returns Model
    */
   protected find(id: number): Model {
     if (typeof id !== 'number') {
@@ -184,8 +164,7 @@ export abstract class Model {
   }
 
   /**
-   *
-   * @returns {Model}
+   * @returns Model
    */
   protected delete(): Model {
     this.config = {
@@ -199,10 +178,9 @@ export abstract class Model {
   }
 
   /**
-   *
-   * @param perPage
-   * @param page
-   * @returns {Model}
+   * @param  {number} perPage
+   * @param  {number} page
+   * @returns Model
    */
   protected paginate(perPage: number, page: number): Model {
     if (typeof perPage !== 'number') {
@@ -227,31 +205,73 @@ export abstract class Model {
 
     return this;
   }
-
-  // Modificadores
-
-  @Validate()
-  protected with(includes: Array<string>): Model {
-    this.queryBuilder.includes = QueryModifier.with(includes)
+  
+  /**
+   * @param  {Array<string>} ...includes
+   * @returns Model
+   */
+  @ResolveArray()
+  protected with(...includes: Array<string>): Model {
+    this.queryBuilder.includes = this.queryModifier.include(includes)
     return this;
   }
 
-  // @Validate()
-  // protected select(fields: Array<string>): Model {
-  //   this.queryBuilder.fields = QueryModifier.select(fields);
-  //   return this;
-  // }
-
-  // @Validate()
-  protected orderBy(column: Array<string>, direction: string = 'asc'): Model {
-    this.queryBuilder.sort = QueryModifier.orderBy(column, direction);
+  /**
+   * @param  {Array<string>} ...fields
+   * @returns Model
+   */
+  @ResolveArray()
+  protected select(...fields: Array<string>): Model {
+    this.queryBuilder.fields = this.queryModifier.select(fields);
     return this;
   }
 
-  // @Validate()
-  // protected where(key: string, value: string | null = null, group = null): Model {
-  //   this.queryBuilder.filters = QueryModifier.where(key, value, group);
-  //   return this;
-  // }
+  /**
+   * @param  {Array<string>} ...column
+   * @returns Model
+   */
+  @ResolveArray()
+  protected orderByAsc(...column: Array<string>): Model {
+    this._orderBy('asc', ...column);
+    return this;
+  }
 
+  /**
+   * @param  {Array<string>} ...column
+   * @returns Model
+   */
+  @ResolveArray()
+  protected orderByDesc(...column: Array<string>): Model {
+    this._orderBy('desc', ...column);
+    return this;
+  }
+
+  /**
+   * @param  {string} key
+   * @param  {string} value
+   * @returns Model
+   */
+  protected where(key: string, value: string): Model {
+    this.queryBuilder.filters = this.queryModifier.filter(key, value);
+    return this;
+  }
+
+  /**
+   * @param  {string} value
+   * @returns Model
+   */
+  protected limit(value: string): Model {
+    this.queryBuilder.filters = this.queryModifier.filter('limit', value);
+    return this;
+  }
+
+  /**
+   * @param  {string} direction
+   * @param  {Array<string>} ...column
+   * @returns Model
+   */
+  private _orderBy(direction: string, ...column: Array<string>): Model {
+    this.queryBuilder.sort = this.queryModifier.orderBy(column, direction);
+    return this;
+  }
 }

@@ -1,4 +1,4 @@
-import {Model} from './ModelManagers/Model';
+import Model from './ModelManagers/Model';
 
 export {
   Model

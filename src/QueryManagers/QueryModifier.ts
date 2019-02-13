@@ -1,66 +1,78 @@
-import { isEmpty, isArray, indexOf, uniq, forOwn, clone, isNull, isUndefined } from 'lodash';
+import { isArray, indexOf, uniq, forOwn } from 'lodash';
 import { TypeError } from '@kernel-js/exceptions';
 
 /**
  *
  */
 export default class QueryModifier {
+  /**
+   * @type String
+   */
+  private resourceName: string;
 
-  constructor () {}
+  constructor (resourceName: string) {
+    this.resourceName = resourceName;
+  }
 
   /**
-   *
-   * @param includes
-   * @returns {Array<string>}
+   * @param  {Array<string>} includes
+   * @returns Array
    */
-  public static with(includes: Array<string>): Array<string>
+  public include(includes: Array<string>): Array<string>
   {
     includes = uniq(includes);
     return includes;
   }
+  
+  /**
+   * @param  {Array<string>} fields
+   * @returns Array
+   */
+  public select(fields: Array<string>): Array<string>
+  {
+    let selectFields: any = {};
 
-  // public static select(fields: Array<string>): Array<string>
-  // {
-  //   if (isArray(fields)) {
-  //     return fields;
-  //   }
+    if (isArray(fields)) {
+      selectFields[this.resourceName] = fields.toString()
+      return selectFields;
+    }
 
-  //   forOwn(fields, (value, resource) => {
-  //     return fields[resource] = value.toString();
-  //   });
+    forOwn(fields, (value: Array<string>, resource) => {
+      selectFields[resource] = value.toString();
+    });
 
-  // }
+    return selectFields;
+  }
 
   /**
    * @param  {Array<string>} column
    * @param  {string='asc'} direction
-   * @returns Array
+   * @returns string
    */
-  public static orderBy(column: Array<string>, direction: string = 'asc'): Array<string>
+  public orderBy(column: Array<string>, direction: string): string
   {
     if (indexOf(['asc', 'desc'], direction) === -1) {
       throw new TypeError(`Argument 2 invalid`, 500);
     }
 
     if (direction === 'desc') {
-      console.log( `-${column}`)
+      return `-${column}`;
     }
     
-    return column;
+    return column.toString();
   }
 
-  // public static where (key: string, value: string | null = null, group = null): Array<string>
-  // {
-  //   if (isNull(group)) {
-  //     return filter[key] = value
-  //   } else {
-  //     // if (isUndefined(this.queryBuilder.filters[group])) {
-  //     //   this.queryBuilder.filters[group] = {}
-  //     // }
+  /**
+   * @param  {string} key
+   * @param  {string} value
+   * @returns Array
+   */
+  public filter(key: string, value: string): Array<string>
+  {
+    let newFilter: any = {};
 
-  //     return filters[group][key] = value
-  //   }
-
-  // }
+    newFilter[key] = value
+    return newFilter
+  }
 
 }

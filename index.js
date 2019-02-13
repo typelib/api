@@ -27,6 +27,7 @@ class Post extends Entity{
   get relationshipNames() {
     return ['author', 'tags', 'comments'];
   }
+
 }
 
 class Tag extends Entity {
@@ -43,8 +44,7 @@ class Tag extends Entity {
 }
 
 let post = new Post;
-let response = post.orderBy(['author, published_at'], 'desc').all().getUrl()
-
+let response = post.with('author', 'tags', 'comments').select('title').all().getUrl();
 console.log(response)
 // response
 //    .then((response) => {

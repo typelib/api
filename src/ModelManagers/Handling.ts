@@ -1,6 +1,6 @@
 import { Serializer, JsonEncoder, JsonApiNormalizer, DateNormalizer } from '@kernel-js/serializer';
 import { clone, mapValues, isUndefined, forEach, isEmpty, indexOf, keys } from 'lodash'
-import { Model } from './Model';
+import Model from './Model';
 import { AxiosResponse } from 'axios';
 
 /**
@@ -9,11 +9,9 @@ import { AxiosResponse } from 'axios';
 export default class Handling {
   
   /**
-   *
-   * @param that
-   * @param respond
-   * @returns {any}
-   * @private
+   * @param  {Model} that
+   * @param  {any} respond
+   * @returns any
    */
   private _hydrate(that: Model, respond: any): any
   {
@@ -21,11 +19,9 @@ export default class Handling {
   }
   
   /**
-   *
-   * @param that
-   * @param respond
-   * @returns {any}
-   * @private
+   * @param  {Model} that
+   * @param  {any} respond
+   * @returns any
    */
   private _hydrateCollection(that: Model, respond: any): any
   {
@@ -36,13 +32,12 @@ export default class Handling {
   }
   
   /**
-   *
-   * @param that
-   * @param response
-   * @param hydrate
-   * @returns {any}
+   * @param  {Model} that
+   * @param  {AxiosResponse} response
+   * @param  {boolean=true} hydrate
+   * @returns any
    */
-  public respond(that: Model, response: AxiosResponse, hydrate = true): any
+  public respond(that: Model, response: AxiosResponse, hydrate:boolean = true): any
   {
     let serializer = new Serializer(new JsonEncoder(), [new JsonApiNormalizer(), new DateNormalizer()]);
     let respond = serializer.unserialize((typeof response === 'string') ? response : JSON.stringify(response));
@@ -58,9 +53,8 @@ export default class Handling {
   }
   
   /**
-   *
-   * @param response
-   * @returns {any}
+   * @param  {Model} response
+   * @returns any
    */
   public serialize(response: Model): any
   {

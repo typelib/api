@@ -1,19 +1,24 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "outDir": "dist",
-      "noImplicitAny": true,
-      "strictNullChecks": true,
-      "removeComments": true,
-      "experimentalDecorators": true,
-      "noEmitOnError": true
-    },
-    "include": [
-      "src/**/*.ts",
-      "./customType.d.ts"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
-  }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "dist",
+    "declaration": true,
+    "alwaysStrict": true,
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "removeComments": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": true,
+  },
+  "include": [
+    "src/**/*.ts",
+    "./customType.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
