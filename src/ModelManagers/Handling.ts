@@ -1,6 +1,7 @@
 import { Serializer, JsonEncoder, JsonApiNormalizer, DateNormalizer } from '@kernel-js/serializer';
 import { clone, mapValues, isUndefined, forEach, isEmpty, indexOf, keys } from 'lodash'
-import Model from './Model';
+import { Model } from './Model';
+import { ModelSignature } from '../Interfaces/index';
 import { AxiosResponse } from 'axios';
 
 /**
@@ -56,13 +57,9 @@ export default class Handling {
    * @param  {Model} response
    * @returns any
    */
-  public serialize(response: Model): any
+  public serialize(response: ModelSignature): any
   {
-    let data: {
-      id: number,
-      type: string,
-      data?: any,
-    } = {
+    let data: ModelSignature = {
       id: NaN,
       type: '',
     };
@@ -73,18 +70,18 @@ export default class Handling {
 
     data.type = response.type;
   
-    // forEach(response.fields, field => {
-    //   if (!isUndefined(response[field])) {
-    //     data[field] = response[field];
-    //   }
-    // });
+    forEach(response.fields, field => {
+      if (!isUndefined(response[field])) {
+        data[field] = response[field];
+      }
+    });
   
-    // forEach(response.relationshipNames, name => {
-    //   if(!isEmpty(response[name])){
-    //     data[name] = response[name]['id'];
-    //   }
-    // });
-
+    forEach(response.relationshipNames, name => {
+      if(!isEmpty(response[name])){
+        data[name] = response[name]['id'];
+      }
+    });
+    console.log(data)
     let serializer = new Serializer(new JsonEncoder());
     return serializer.serialize(data);
   }

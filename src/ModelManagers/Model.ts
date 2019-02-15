@@ -1,14 +1,14 @@
 import Handling from './Handling';
 import QueryModifier from '../QueryManagers/QueryModifier'
 import QueryBuilder from '../QueryManagers/QueryBuilder';
-import { Config } from '../Interfaces/index';
+import { Config, ModelSignature } from '../Interfaces/index';
 import { TypeError } from '@kernel-js/exceptions';
 import { ResolveArray } from '../helpers/index';
 
 /**
  *
  */
-export default abstract class Model {
+export abstract class Model implements ModelSignature {
     
   /**
    * @type {Handling}
@@ -103,8 +103,8 @@ export default abstract class Model {
   /**
    * @returns string
    */
-  protected getUrl(): string {
-    return this.config.url;
+  protected getUrl(): any {
+    return this.config;
   }
 
   /**

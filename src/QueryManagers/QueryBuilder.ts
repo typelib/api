@@ -1,7 +1,7 @@
 
 import { isEmpty, forOwn, isObject, isNull } from 'lodash';
 import { Paginate } from '../Interfaces/index';
-import Model from '../ModelManagers/Model';
+import { Model } from '../ModelManagers/Model';
 
 /**
  *

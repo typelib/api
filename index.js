@@ -1,4 +1,4 @@
-const { Model } = require('./dist/ModelManagers/Model.js')
+const {Model} = require('./dist/ModelManagers/Model.js')
 const _ = require('lodash')
 const Axios = require('axios');
 
@@ -16,6 +16,10 @@ class Entity extends Model {
 
 class Post extends Entity{
 
+  constructor() {
+    super()
+    this.id = 2
+  }
   get resourceName() {
     return 'posts';
   } 
@@ -43,16 +47,13 @@ class Tag extends Entity {
 
 }
 
-let post = new Post;
-let response = post.with('author', 'tags', 'comments').select('title').all().getUrl();
-console.log(response)
-// response
-//    .then((response) => {
-//       // response.title = 'Um novo dia para perder um dia YEAH';
-//       // response.save().send()
-//         // .then(result => console.log(result))
-//       console.log(response)
-//    });
+let post1 = new Post;
+let post2 = post1.find(2).getEntity();
+
+post2.then(result => {
+  let response = result.save().getUrl();
+  console.log(response)
+})
 
 
 
