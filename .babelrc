@@ -2,7 +2,9 @@
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     "@babel/proposal-class-properties",
-    "@babel/proposal-object-rest-spread"
+    "@babel/proposal-object-rest-spread",
+    "transform-regenerator",
+    "@babel/plugin-transform-async-to-generator"
   ],
   "presets": [
     // "@babel/env",

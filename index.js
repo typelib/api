@@ -9,7 +9,7 @@ class Entity extends Model {
   }
 
   get baseUrl(){
-    return 'http://127.0.0.1:8000/api';
+    return 'http://192.168.10.224:8000/api';
   } 
 
 }
@@ -47,15 +47,30 @@ class Tag extends Entity {
 
 }
 
+// let url = 'http://192.168.10.224:8000/api/posts'
+
+// Axios.get(url)
+// .then((tes) => {
+//   console.log(tes.data)
+// })
+// .catch(result => {
+//   console.log(result);
+// })
+
 let post1 = new Post;
-let post2 = post1.find(2).getEntity();
+let url = post1.select('title', 'slug').all().getUrl();
+let post2 = post1.select('title', 'slug').all().getContent();
+// // let post2 = post1.paginate(3,1).getContent();
+console.log(url)
 
-post2.then(result => {
-  let response = result.save().getUrl();
-  console.log(response)
+post2
+.then(result => {
+  console.log(result);
 })
-
-
+.catch(result => {
+  console.log(result.response.data.message);
+  // console.log(result.response.data.trace);
+})
 
 
 

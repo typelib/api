@@ -4,6 +4,7 @@ import QueryBuilder from '../QueryManagers/QueryBuilder';
 import { Config, ModelSignature } from '../Interfaces/index';
 import { TypeError } from '@kernel-js/exceptions';
 import { ResolveArray } from '../helpers/index';
+import { resolve } from 'dns';
 
 /**
  *
@@ -82,35 +83,43 @@ export abstract class Model implements ModelSignature {
    * @param  {Config} config
    * @returns Promise
    */
-  protected abstract async request(config: Config): Promise<any>;
+  protected abstract request(config: Config): Promise<any>;
 
   /**
    * @param  {boolean=true} hydrate
    * @returns Promise
    */
-  protected async getEntity(hydrate:boolean = true): Promise<any> {
-    let response = await this.request(this.config);
-    return (response.data) ? this.handling.respond(this, response.data, hydrate) : response;
+  public getEntity(hydrate:boolean = true): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.request(this.config)
+      .then( response => {
+        const res = (response.data) ? this.handling.respond(this, response.data, hydrate) : response;
+        resolve(res);
+      })
+      .catch( response => {
+        reject(response)
+      });
+    })
   }
 
   /**
    * @returns Promise
    */
-  protected getContent(): Promise<any> {
+  public getContent(): Promise<any> {
     return this.getEntity(false);
   }
 
   /**
    * @returns string
    */
-  protected getUrl(): any {
-    return this.config;
+  public getUrl(): any {
+    return this.config.url;
   }
 
   /**
    * @returns Model
    */
-  protected all(): Model {
+  public all(): Model {
     this.config = {
       method: 'GET',
       url: `${this.resourceUrl()}${this.queryBuilder.getQuery(this)}`,
@@ -124,7 +133,21 @@ export abstract class Model implements ModelSignature {
   /**
    * @returns Model
    */
-  protected save(): Model {
+  public search(): Model {
+    this.config = {
+      method: 'GET',
+      url: `${this.resourceUrl()}search${this.queryBuilder.getQuery(this)}`,
+    };
+
+    this.queryBuilder.resetQuery(this);
+
+    return this;
+  }
+
+  /**
+   * @returns Model
+   */
+  public save(): Model {
     if (this.hasOwnProperty('id')) {
       this.config = {
         method: 'PUT',
@@ -148,7 +171,7 @@ export abstract class Model implements ModelSignature {
    * @param  {number} id
    * @returns Model
    */
-  protected find(id: number): Model {
+  public find(id: number): Model {
     if (typeof id !== 'number') {
       throw new TypeError(`Argument 1 passed must be of the type number, ${typeof id} given`, 500);
     }
@@ -166,7 +189,7 @@ export abstract class Model implements ModelSignature {
   /**
    * @returns Model
    */
-  protected delete(): Model {
+  public delete(): Model {
     this.config = {
       method: 'DELETE',
       url: `${this.resourceUrl()}${this.id}`
@@ -182,7 +205,7 @@ export abstract class Model implements ModelSignature {
    * @param  {number} page
    * @returns Model
    */
-  protected paginate(perPage: number, page: number): Model {
+  public paginate(perPage: number, page: number): Model {
     if (typeof perPage !== 'number') {
       throw new TypeError(`Argument 1 passed must be of the type number, ${typeof this.id} given`, 500);
     }
@@ -211,7 +234,7 @@ export abstract class Model implements ModelSignature {
    * @returns Model
    */
   @ResolveArray()
-  protected with(...includes: Array<string>): Model {
+  public with(...includes: Array<string>): Model {
     this.queryBuilder.includes = this.queryModifier.include(includes)
     return this;
   }
@@ -221,7 +244,7 @@ export abstract class Model implements ModelSignature {
    * @returns Model
    */
   @ResolveArray()
-  protected select(...fields: Array<string>): Model {
+  public select(...fields: Array<string>): Model {
     this.queryBuilder.fields = this.queryModifier.select(fields);
     return this;
   }
@@ -231,7 +254,7 @@ export abstract class Model implements ModelSignature {
    * @returns Model
    */
   @ResolveArray()
-  protected orderByAsc(...column: Array<string>): Model {
+  public orderByAsc(...column: Array<string>): Model {
     this._orderBy('asc', ...column);
     return this;
   }
@@ -241,7 +264,7 @@ export abstract class Model implements ModelSignature {
    * @returns Model
    */
   @ResolveArray()
-  protected orderByDesc(...column: Array<string>): Model {
+  public orderByDesc(...column: Array<string>): Model {
     this._orderBy('desc', ...column);
     return this;
   }
@@ -251,7 +274,7 @@ export abstract class Model implements ModelSignature {
    * @param  {string} value
    * @returns Model
    */
-  protected where(key: string, value: string): Model {
+  public where(key: string, value: string): Model {
     this.queryBuilder.filters = this.queryModifier.filter(key, value);
     return this;
   }
@@ -260,7 +283,7 @@ export abstract class Model implements ModelSignature {
    * @param  {string} value
    * @returns Model
    */
-  protected limit(value: string): Model {
+  public limit(value: string): Model {
     this.queryBuilder.filters = this.queryModifier.filter('limit', value);
     return this;
   }
