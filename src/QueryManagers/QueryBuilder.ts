@@ -1,5 +1,5 @@
 
-import { isEmpty, forOwn, isObject, isNull } from 'lodash';
+import { isEmpty, forOwn, isObject, isNull, get } from 'lodash';
 import { Paginate } from '../Interfaces/index';
 import { Model } from '../ModelManagers/Model';
 
@@ -47,16 +47,15 @@ export default class QueryBuilder {
    * @returns string
    */
   public getQuery(self: Model): string {
-    let query = '';
 
-    query += this.resolveIncludes(self.queryBuilder.includes);
-    query += this.resolveFields(self.queryBuilder.fields);
-    query += this.resolveFilters(self.queryBuilder.filters);
-    query += this.resolvePagination(self.queryBuilder.pagination);
-    query += this.resolveSort(self.queryBuilder.sort);
-    
-    if (query.length) {
-      self.queryBuilder.query = `?${encodeURI(query)}`;
+    this.query += this.resolveIncludes(self.queryBuilder.includes);
+    this.query += this.resolveFields(self.queryBuilder.fields);
+    this.query += this.resolveFilters(self.queryBuilder.filters);
+    this.query += this.resolvePagination(self.queryBuilder.pagination);
+    this.query += this.resolveSort(self.queryBuilder.sort);
+
+    if (this.query.length) {
+      self.queryBuilder.query = `?${encodeURI(this.query)}`;
     }
     
     return self.queryBuilder.query;
@@ -65,8 +64,8 @@ export default class QueryBuilder {
   /**
    * @param  {string} query
    */
-  private setAmpersand(query: string) {
-    if (query.length) {
+  public setAmpersand(query: string) {
+    if (query) {
       return '&'
     }
     return '';
@@ -120,7 +119,7 @@ export default class QueryBuilder {
     });
 
     if (!isEmpty(resolveFilters)) {
-        return `${this.setAmpersand(this.query)}${resolveFilters}`;
+      return `${this.setAmpersand(this.query)}${resolveFilters}`;
     }
 
     return ''
@@ -143,7 +142,7 @@ export default class QueryBuilder {
    * @returns string
    */
   public resolvePagination(pagination: Paginate): string {
-    if (!isEmpty(pagination)) {
+    if (!isEmpty(get(pagination, 'number')) && !isEmpty(get(pagination, 'size'))) {
       return `${this.setAmpersand(this.query)}page[size]=${pagination.size}&page[number]=${pagination.number}`;
     }
     
