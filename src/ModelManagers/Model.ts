@@ -1,10 +1,10 @@
 import Handling from './Handling';
-import QueryModifier from '../QueryManagers/QueryModifier'
-import QueryBuilder from '../QueryManagers/QueryBuilder';
-import { Config, ModelSignature } from '../Interfaces/index';
-import { TypeError } from '@kernel-js/exceptions';
 import { ResolveArray } from '../helpers/index';
-import { resolve } from 'dns';
+import { TypeError } from '@kernel-js/exceptions';
+import QueryBuilder from '../QueryManagers/QueryBuilder';
+import QueryModifier from '../QueryManagers/QueryModifier';
+import { Config, ModelSignature } from '../Interfaces/index';
+import { get } from 'lodash';
 
 /**
  *
@@ -40,6 +40,11 @@ export abstract class Model implements ModelSignature {
    * @type {Config}
    */
   public config!: Config;
+
+  /**
+   * @type {Any}
+   */
+  public attributes: any = {};
 
   /**
    * @type {String}
@@ -147,8 +152,8 @@ export abstract class Model implements ModelSignature {
   /**
    * @returns Model
    */
-  public save(): Model {
-    if (this.hasOwnProperty('id')) {
+  public save(): Promise<any> {
+    if (get(this, 'id')) {
       this.config = {
         method: 'PUT',
         url: `${this.resourceUrl()}${this.id}`,
@@ -164,7 +169,7 @@ export abstract class Model implements ModelSignature {
 
     this.queryBuilder.resetQuery(this);
 
-    return this;
+    return this.request(this.config);
   }
 
   /**

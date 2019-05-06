@@ -1,5 +1,5 @@
 import { Serializer, JsonEncoder, JsonApiNormalizer, DateNormalizer } from '@kernel-js/serializer';
-import { clone, mapValues, isUndefined, forEach, isEmpty, indexOf, keys } from 'lodash'
+import { clone, mapValues, isUndefined, forEach, isEmpty, indexOf, keys } from 'lodash';
 import { Model } from './Model';
 import { ModelSignature } from '../Interfaces/index';
 import { AxiosResponse } from 'axios';
@@ -12,13 +12,15 @@ export default class Handling {
   /**
    * @param  {Model} that
    * @param  {any} respond
-   * @returns any
+   * @returns Model
    */
-  private _hydrate(that: Model, respond: any): any
+  private _hydrate(that: Model, respond: any): Model
   {
-    return Object.assign(clone(that), respond)
+    that.id = respond.id;
+    that.attributes = Object.assign(clone(that.attributes), respond)
+    return that
   }
-  
+
   /**
    * @param  {Model} that
    * @param  {any} respond
@@ -27,11 +29,11 @@ export default class Handling {
   private _hydrateCollection(that: Model, respond: any): any
   {
     let self = this;
-    return mapValues(respond, (value) => {
+    return mapValues(respond, (value: any) => {
       return self._hydrate(clone(that), value);
     });
   }
-  
+
   /**
    * @param  {Model} that
    * @param  {AxiosResponse} response
@@ -71,8 +73,8 @@ export default class Handling {
     data.type = response.type;
   
     forEach(response.fields, field => {
-      if (!isUndefined(response[field])) {
-        data[field] = response[field];
+      if (!isUndefined(response.attributes[field])) {
+        data[field] = response.attributes[field];
       }
     });
   
@@ -81,7 +83,7 @@ export default class Handling {
         data[name] = response[name]['id'];
       }
     });
-    console.log(data)
+
     let serializer = new Serializer(new JsonEncoder());
     return serializer.serialize(data);
   }
