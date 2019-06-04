@@ -81,7 +81,7 @@ export abstract class Model implements ModelSignature {
    * @returns string
    */
   protected resourceUrl(): string {
-    return `${this.baseUrl}/${this.resourceName}/`
+    return `${this.baseUrl}/${this.resourceName}`
   }
 
   /**
