@@ -5,78 +5,79 @@ const Axios = require('axios');
 class Entity extends Model {
 
   async request (config) {
+    Axios.defaults.headers.put['Content-Type'] = 'application/json';
+    Axios.defaults.headers.post['Content-Type'] = 'application/json';
+    Axios.defaults.headers.patch['Content-Type'] = 'application/json';
     return Axios.request(config);
   }
 
   get baseUrl(){
-    return 'http://192.168.10.224:8000/api';
+    return 'http://192.168.10.213:8000/api';
   } 
 
 }
 
-class Post extends Entity{
+class Permission extends Entity{
 
   constructor() {
     super()
     this.id = 2
   }
   get resourceName() {
-    return 'posts';
+    return 'permissions';
   } 
 
   get fields() {
-    return ['title', 'slug', 'subtitle', 'body', 'published_at'];
+    return ['name', 'code'];
   }
 
   get relationshipNames() {
-    return ['author', 'tags', 'comments'];
+    return ['profile'];
   }
 
 }
 
-class Tag extends Entity {
+class Profile extends Entity {
 
-  resourceName() {
-    return 'tags'
+  get resourceName() {
+    return 'profiles'
   }
 
-  fields()
+  get relationshipNames() {
+    return ['permission'];
+  }
+
+  get fields()
   {
     return ['name']
   }
 
 }
 
-// let url = 'http://192.168.10.224:8000/api/posts'
+// constructor
+let profile = new Profile();
 
-// Axios.get(url)
-// .then((tes) => {
-//   console.log(tes.data)
-// })
-// .catch(result => {
-//   console.log(result);
-// })
+// função get (com apenas um, para teste)
+async function getProfile() {
+  profile = await profile.find(1).getEntity();
+}
 
-let post1 = new Post;
-let url = post1.select('title', 'slug').all().getUrl();
-let post2 = post1.select('title', 'slug').all().getContent();
-// // let post2 = post1.paginate(3,1).getContent();
-console.log(url)
+// Mounted
+getProfile()
 
-post2
-.then(result => {
-  console.log(result);
-})
-.catch(result => {
-  console.log(result.response.data.message);
-  // console.log(result.response.data.trace);
-})
+// constructor
+let permission = new Permission();
 
+// função get (com apenas um, para teste)
+async function getPermission() {
+  permission = await permission.find(1).getEntity()
+}
 
+// Mounted
+getPermission()
 
-
-
-
-
-
-
+console.log('Loading SHOW')
+setTimeout(() => {
+  profile.createPivot(permission).then(res => console.log(res.status)).catch(res => {console.log(res)})
+  console.log('Loading HIDE')
+}, 2000)

@@ -142,7 +142,7 @@ export default class QueryBuilder {
    * @returns string
    */
   public resolvePagination(pagination: Paginate): string {
-    if (!isEmpty(get(pagination, 'number')) && !isEmpty(get(pagination, 'size'))) {
+    if (get(pagination, 'number', false) && get(pagination, 'size', false)) {
       return `${this.setAmpersand(this.query)}page[size]=${pagination.size}&page[number]=${pagination.number}`;
     }
     

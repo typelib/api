@@ -1,5 +1,8 @@
 import {isArray, indexOf} from 'lodash';
 
+/**
+ * Resolve spread operator
+ */
 export function ResolveArray(): any {
 
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {

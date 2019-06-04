@@ -5,7 +5,8 @@
   "main": "./dist/index.js",
   "module": "./es6/index.js",
   "scripts": {
-    "watch": "tsc -w",
+    "serve": "tsc -w",
+    "test": "mocha -r ts-node/register test/**/*Test.ts",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "build": "npm run build:types && npm run build:js",
@@ -35,27 +36,28 @@
     "url": "https://github.com/kernel-js/api/issues"
   },
   "homepage": "https://github.com/kernel-js/api#readme",
+  "dependencies": {
+    "@kernel-js/exceptions": "^1.0.4",
+    "@kernel-js/serializer": "^1.0.0",
+    "axios": "^0.18.0",
+    "lodash": "^4.17.11"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-decorators": "^7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-typescript": "^7.3.3",
+    "@types/chai": "^4.1.7",
+    "@types/chai-http": "^4.2.0",
     "@types/lodash": "^4.14.123",
-    "babel-polyfill": "^6.26.0",
-    "chai": "^4.1.2",
-    "chai-http": "^4.3.0",
+    "@types/mocha": "^5.2.6",
+    "chai": "^4.2.0",
     "cross-env": "^5.1.4",
-    "mocha": "^5.0.4",
-    "rimraf": "^2.6.3",
+    "mocha": "^6.1.4",
+    "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
-  },
-  "dependencies": {
-    "@kernel-js/exceptions": "^1.0.4",
-    "@kernel-js/serializer": "^1.0.0",
-    "axios": "^0.18.0"
   }
 }

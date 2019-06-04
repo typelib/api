@@ -61,6 +61,13 @@ export default class Handling {
    */
   public serialize(response: ModelSignature): any
   {
+    let serializer = new Serializer(new JsonEncoder());
+
+    if (response.relationships) {
+      response.relationships.type = response.relationships.type.toLowerCase();
+      return serializer.serialize(response.relationships);
+    }
+
     let data: ModelSignature = {
       id: NaN,
       type: '',
@@ -84,7 +91,6 @@ export default class Handling {
       }
     });
 
-    let serializer = new Serializer(new JsonEncoder());
     return serializer.serialize(data);
   }
 
