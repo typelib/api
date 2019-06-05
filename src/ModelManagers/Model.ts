@@ -7,7 +7,7 @@ import { Config, ModelSignature } from '../Interfaces/index';
 import { get } from 'lodash';
 
 /**
- *
+ * Model Abstract class
  */
 export abstract class Model implements ModelSignature {
     
@@ -45,6 +45,11 @@ export abstract class Model implements ModelSignature {
    * @type {Any}
    */
   public attributes: any = {};
+
+  /**
+   * @type {Any}
+   */
+  public relationships: any = {};
 
   /**
    * @type {String}
@@ -94,7 +99,7 @@ export abstract class Model implements ModelSignature {
    * @param  {boolean=true} hydrate
    * @returns Promise
    */
-  public getEntity(hydrate:boolean = true): Promise<any> {
+  public async getEntity(hydrate:boolean = true): Promise<any> {
     return new Promise((resolve, reject) => {
       this.request(this.config)
       .then( response => {
@@ -117,8 +122,15 @@ export abstract class Model implements ModelSignature {
   /**
    * @returns string
    */
-  public getUrl(): any {
+  public getUrl(): string {
     return this.config.url;
+  }
+
+  /**
+   * @returns string
+   */
+  public getUrlConfig(): Config {
+    return this.config;
   }
 
   /**
@@ -152,7 +164,7 @@ export abstract class Model implements ModelSignature {
   /**
    * @returns Model
    */
-  public save(): Promise<any> {
+  public async save() {
     if (get(this, 'id')) {
       this.config = {
         method: 'PUT',
@@ -166,6 +178,90 @@ export abstract class Model implements ModelSignature {
         data: this.handling.serialize(this)
       };
     }
+
+    this.queryBuilder.resetQuery(this);
+
+    return this.request(this.config);
+  }
+
+  /**
+   * @param  {Model} entity
+   * @returns Model
+   */
+  public attach(entity: Model) {
+    this.relationships = {
+      type: entity.constructor.name,
+      id: entity.id,
+    };
+
+    this.config = {
+      method: 'PATCH',
+      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      data: this.handling.serialize(this)
+    };
+
+    this.queryBuilder.resetQuery(this);
+
+    return this.request(this.config);
+  }
+
+  /**
+   * @param  {Model} entity
+   * @returns Model
+   */
+  public detach(entity: Model) {
+    this.relationships = {
+      type: entity.constructor.name,
+      id: entity.id,
+    };
+
+    this.config = {
+      method: 'PATCH',
+      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      data: []
+    };
+
+    this.queryBuilder.resetQuery(this);
+
+    return this.request(this.config);
+  }
+
+  /**
+   * @param  {Model} entity
+   * @returns Model
+   */
+  public createPivot(entity: Model) {
+    this.relationships = {
+      type: entity.constructor.name,
+      id: entity.id,
+    };
+
+    this.config = {
+      method: 'POST',
+      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      data: this.handling.serialize(this)
+    };
+
+    this.queryBuilder.resetQuery(this);
+
+    return this.request(this.config);
+  }
+
+  /**
+   * @param  {Model} entity
+   * @returns Model
+   */
+  public deletePivot(entity: Model) {
+    this.relationships = {
+      type: entity.constructor.name,
+      id: entity.id,
+    };
+
+    this.config = {
+      method: 'DELETE',
+      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      data: []
+    };
 
     this.queryBuilder.resetQuery(this);
 
@@ -274,7 +370,7 @@ export abstract class Model implements ModelSignature {
     return this;
   }
 
-  /**
+  /**w
    * @param  {string} key
    * @param  {string} value
    * @returns Model
@@ -302,4 +398,5 @@ export abstract class Model implements ModelSignature {
     this.queryBuilder.sort = this.queryModifier.orderBy(column, direction);
     return this;
   }
+
 }

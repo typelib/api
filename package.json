@@ -5,7 +5,8 @@
   "main": "./dist/index.js",
   "module": "./es6/index.js",
   "scripts": {
-    "watch": "tsc -w",
+    "serve": "tsc -w",
+    "test": "mocha -r ts-node/register test/**/*Test.ts",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "build": "npm run build:types && npm run build:js",
@@ -35,9 +36,14 @@
     "url": "https://github.com/kernel-js/api/issues"
   },
   "homepage": "https://github.com/kernel-js/api#readme",
+  "dependencies": {
+    "@kernel-js/exceptions": "^1.0.4",
+    "@kernel-js/serializer": "^1.0.0",
+    "axios": "^0.18.1",
+    "lodash": "^4.17.11"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-decorators": "^7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
@@ -52,10 +58,5 @@
     "rimraf": "^2.6.3",
     "tslint": "^5.17.0",
     "typescript": "^3.5.1"
-  },
-  "dependencies": {
-    "@kernel-js/exceptions": "^1.0.4",
-    "@kernel-js/serializer": "^1.0.0",
-    "axios": "^0.18.1"
   }
 }

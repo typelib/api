@@ -2,7 +2,7 @@ import { isArray, indexOf, uniq, forOwn } from 'lodash';
 import { TypeError } from '@kernel-js/exceptions';
 
 /**
- *
+ * 
  */
 export default class QueryModifier {
   /**
