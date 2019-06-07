@@ -153,7 +153,7 @@ export abstract class Model implements ModelSignature {
   public search(): Model {
     this.config = {
       method: 'GET',
-      url: `${this.resourceUrl()}search${this.queryBuilder.getQuery(this)}`,
+      url: `${this.resourceUrl()}/search${this.queryBuilder.getQuery(this)}`,
     };
 
     this.queryBuilder.resetQuery(this);
@@ -168,7 +168,7 @@ export abstract class Model implements ModelSignature {
     if (get(this, 'id')) {
       this.config = {
         method: 'PUT',
-        url: `${this.resourceUrl()}${this.id}`,
+        url: `${this.resourceUrl()}/${this.id}`,
         data: this.handling.serialize(this)
       };
     } else {
@@ -196,7 +196,7 @@ export abstract class Model implements ModelSignature {
 
     this.config = {
       method: 'PATCH',
-      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      url: `${this.resourceUrl()}/${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
       data: this.handling.serialize(this)
     };
 
@@ -217,7 +217,7 @@ export abstract class Model implements ModelSignature {
 
     this.config = {
       method: 'PATCH',
-      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      url: `${this.resourceUrl()}/${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
       data: []
     };
 
@@ -238,7 +238,7 @@ export abstract class Model implements ModelSignature {
 
     this.config = {
       method: 'POST',
-      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      url: `${this.resourceUrl()}/${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
       data: this.handling.serialize(this)
     };
 
@@ -259,7 +259,7 @@ export abstract class Model implements ModelSignature {
 
     this.config = {
       method: 'DELETE',
-      url: `${this.resourceUrl()}${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
+      url: `${this.resourceUrl()}/${this.id}/relationships/${this.relationships.type.toLowerCase()}`,
       data: []
     };
 
@@ -269,17 +269,17 @@ export abstract class Model implements ModelSignature {
   }
 
   /**
-   * @param  {number} id
+   * @param  {number|string} id
    * @returns Model
    */
-  public find(id: number): Model {
-    if (typeof id !== 'number') {
+  public find(id: number | string): Model {
+    if (typeof id !== 'number' && typeof id !== 'string') {
       throw new TypeError(`Argument 1 passed must be of the type number, ${typeof id} given`, 500);
     }
 
     this.config = {
       method: 'GET',
-      url: `${this.resourceUrl()}${id}${this.queryBuilder.getQuery(this)}`
+      url: `${this.resourceUrl()}/${id}${this.queryBuilder.getQuery(this)}`
     };
 
     this.queryBuilder.resetQuery(this);
@@ -293,7 +293,7 @@ export abstract class Model implements ModelSignature {
   public delete(): Model {
     this.config = {
       method: 'DELETE',
-      url: `${this.resourceUrl()}${this.id}`
+      url: `${this.resourceUrl()}/${this.id}`
     };
 
     this.queryBuilder.resetQuery(this);
