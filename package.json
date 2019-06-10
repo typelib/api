@@ -1,6 +1,6 @@
 {
   "name": "@kernel-js/api",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Package to easily develop REST API following JSON API specification.",
   "main": "./dist/index.js",
   "module": "./es6/index.js",
@@ -44,18 +44,21 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-proposal-decorators": "^7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-typescript": "^7.3.3",
-    "@types/lodash": "^4.14.133",
+    "@types/lodash": "^4.14.134",
+    "@types/mocha": "^5.2.7",
     "babel-polyfill": "^6.26.0",
     "chai": "^4.1.2",
     "chai-http": "^4.3.0",
     "cross-env": "^5.1.4",
     "mocha": "^5.0.4",
     "rimraf": "^2.6.3",
+    "ts-node": "^8.2.0",
     "tslint": "^5.17.0",
     "typescript": "^3.5.1"
   }

@@ -44,7 +44,7 @@ export default class Handling {
   {
     let serializer = new Serializer(new JsonEncoder(), [new JsonApiNormalizer(), new DateNormalizer()]);
     let respond = serializer.unserialize((typeof response === 'string') ? response : JSON.stringify(response));
-    let hydrated;
+    let hydrated: any;
 
     if(indexOf(keys(respond), '0') !== -1) {
       hydrated = this._hydrateCollection(that, respond);
@@ -63,7 +63,7 @@ export default class Handling {
   {
     let serializer = new Serializer(new JsonEncoder());
 
-    if (response.relationships) {
+    if (!isEmpty(response.relationships)) {
       response.relationships.type = response.relationships.type.toLowerCase();
       return serializer.serialize(response.relationships);
     }

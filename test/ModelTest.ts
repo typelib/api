@@ -14,7 +14,7 @@ describe('Requests', () => {
 
     let result = entity.all().getUrlConfig();
 
-    chai.expect(result).to.deep.equal({ method: 'GET', url: 'http://localhost/api/posts/' });
+    chai.expect(result).to.deep.equal({ method: 'GET', url: 'http://localhost/api/posts' });
   });
 
   it('find', () => {
@@ -29,7 +29,7 @@ describe('Requests', () => {
     let entity = new Entity();
 
     let result = entity.paginate(3, 1).getUrlConfig();
-    chai.expect(result).to.deep.equal({ method: 'GET', url: 'http://localhost/api/posts/?page%5Bsize%5D=3&page%5Bnumber%5D=1' });
+    chai.expect(result).to.deep.equal({ method: 'GET', url: 'http://localhost/api/posts?page%5Bsize%5D=3&page%5Bnumber%5D=1' });
   });
 
   // it('create', () => {
@@ -81,7 +81,7 @@ describe('Handling', () => {
     let entity = new Entity();
 
     let result = JSON.stringify(handling.respond(_.clone(entity), requestOne, true));
-    const expect = '{"attributes":{"id":"1","type":"posts","title":"Suscipit ad voluptatum est aliquam omnis."},"queryBuilder":{"query":""},"queryModifier":{"resourceName":"posts"},"handling":{},"id":"1"}';
+    const expect = '{"attributes":{"id":"1","type":"posts","title":"Suscipit ad voluptatum est aliquam omnis."},"relationships":{},"queryBuilder":{"query":""},"queryModifier":{"resourceName":"posts"},"handling":{},"id":"1"}';
 
     chai.expect(result).to.deep.equal(expect);
   });
@@ -120,6 +120,7 @@ describe('Handling', () => {
         queryModifier: {
           resourceName: 'posts',
         },
+        relationships: {},
         handling: {},
         id: '1',
         attributes: {
@@ -135,6 +136,7 @@ describe('Handling', () => {
         queryModifier: {
           resourceName: 'posts',
         },
+        relationships: {},
         handling: {},
         id: '2',
         attributes: {
@@ -150,6 +152,7 @@ describe('Handling', () => {
         queryModifier: {
           resourceName: 'posts',
         },
+        relationships: {},
         handling: {},
         id: '3',
         attributes: {
