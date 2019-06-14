@@ -1,6 +1,6 @@
-test/Request.js
 .idea
 dist
 es6
 node_modules
 .DS_Store
+index.js

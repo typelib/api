@@ -27,9 +27,9 @@ export abstract class Model implements ModelSignature {
   public queryBuilder: QueryBuilder;
 
   /**
-   * @type {Number}
+   * @type {Number|String}
    */
-  public id!: number;
+  public id!: number | String;
 
   /**
    * @type {String}
@@ -274,7 +274,7 @@ export abstract class Model implements ModelSignature {
    */
   public find(id: number | string): Model {
     if (typeof id !== 'number' && typeof id !== 'string') {
-      throw new TypeError(`Argument 1 passed must be of the type number, ${typeof id} given`, 500);
+      throw new TypeError(`Argument 1 passed must be of the type number or string, ${typeof id} given`, 500);
     }
 
     this.config = {

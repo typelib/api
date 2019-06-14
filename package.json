@@ -1,6 +1,6 @@
 {
   "name": "@kernel-js/api",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Package to easily develop REST API following JSON API specification.",
   "main": "./dist/index.js",
   "module": "./es6/index.js",
