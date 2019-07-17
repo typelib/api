@@ -1,6 +1,6 @@
 {
   "name": "@kernel-js/api",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Package to easily develop REST API following JSON API specification.",
   "main": "./dist/index.js",
   "module": "./es6/index.js",
@@ -40,17 +40,17 @@
     "@kernel-js/exceptions": "^1.0.4",
     "@kernel-js/serializer": "^1.0.0",
     "axios": "^0.18.1",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.14"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
     "@babel/plugin-proposal-decorators": "^7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
-    "@babel/preset-env": "^7.4.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
     "@babel/preset-typescript": "^7.3.3",
-    "@types/lodash": "^4.14.134",
+    "@types/lodash": "^4.14.136",
     "@types/mocha": "^5.2.7",
     "babel-polyfill": "^6.26.0",
     "chai": "^4.1.2",
@@ -58,8 +58,8 @@
     "cross-env": "^5.1.4",
     "mocha": "^5.0.4",
     "rimraf": "^2.6.3",
-    "ts-node": "^8.2.0",
-    "tslint": "^5.17.0",
-    "typescript": "^3.5.1"
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }
